@@ -1,6 +1,94 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link,useNavigate, useLocation} from 'react-router-dom'
+import ITSem1 from './Cat/ITSem1'
+// import EceSem1years from './Years/EceSem1years';
+// import { useLocation } from 'react-router-dom';
+// import AppChe22 from './Subjects/AppChe22';
+// import Cal22 from './Subjects/Cal22';
+// import ProgFun22 from './Subjects/ProgFun22';
+// import Beee22 from './Subjects/Beee22';
+// import EngGra22 from './Subjects/EngGra22';
+import EceSem1 from './Cat/EceSem1';
+// import MainSection from './MainSection';
+import BTSem1 from './Cat/BTSem1';
+import EeeSem1 from './Cat/EeeSem1';
+import MechSem1 from './Cat/MechSem1';
+import CseSem1 from './Cat/CseSem1'
 
 function Pyq() {
+
+    const [display, setDisplay] = useState(<EceSem1 />)
+    const[data, setData] = useState('')
+    const Nav = useNavigate() ;
+    const callAboutPage = async() =>{
+        try{
+            const res =await fetch("http://localhost:4000/",{
+               method:"GET",
+               headers:{
+                   Accept:"application/json" , 
+                   "Content-Type":"application/json"
+               },
+               credentials:"include"
+            })
+            const data =await res.json()
+            
+            console.log(data) ;
+            setData(data)
+             if(!res.status===200){
+               const error = new Error(res.error)
+               throw error ;
+               Nav("/home") ;
+             }
+       }catch(err){
+          console.log(err) ;
+          Nav("/home") ;
+       }
+      }
+       const location = useLocation()
+    useEffect(()=>{
+      callAboutPage() ;
+    },[])
+    // const [sem1, setSem] = useState('')
+    // const [branch1, setBranch] = useState('ECE')
+
+    const onClick = () => {
+        var e = document.querySelector('#sem')
+        var f = document.querySelector('#branch')
+        const sem = e.value;
+        const branch = f.value;
+        // setDisplay(output)
+        console.log(sem)
+        console.log(branch)
+        // setBranch(branch)
+        // setSem(sem)
+        if(branch === "IT" && sem==="SEM-1") {
+            setDisplay(<ITSem1/>)
+        }
+
+        if(branch === "ECE" && sem==="SEM-1") {
+            setDisplay(<EceSem1/>)
+        }
+
+        if(branch === "BT" && sem === "SEM-1"){
+            setDisplay(<BTSem1/>)
+        }
+
+        if(branch==="CSE" && sem==="SEM-1"){
+            setDisplay(<CseSem1/>)
+        }
+
+        if(branch==="EEE" && sem==="SEM-1"){
+            setDisplay(<EeeSem1/>)
+        }
+
+        if(branch==="MECH" && sem==="SEM-1"){
+            setDisplay(<MechSem1/>)
+        }
+    }
+
+    
+
+    
     return (
         <>
             <div className="pyqBody">
@@ -14,12 +102,13 @@ function Pyq() {
                         <div className="choice">
                             <select name="branch" id="branch">
                                 <option value="ECE" >ECE</option>
-                                <option value="ECE" >IT</option>
-                                <option value="ECE" >CSE</option>
-                                <option value="ECE" >EEE</option>
-                                <option value="ECE" >BT</option>
+                                <option value="IT" >IT</option>
+                                <option value="CSE" >CSE</option>
+                                <option value="EEE" >EEE</option>
+                                <option value="BT" >BT</option>
+                                <option value="MECH">MECH</option>
                             </select>
-                            <select name="semster" id="sem">
+                            <select name="semester" id="sem">
                                 <option value="SEM-1" >SEM-1</option>
                                 <option value="SEM-2" >SEM-2</option>
                                 <option value="SEM-3" >SEM-3</option>
@@ -28,19 +117,14 @@ function Pyq() {
                                 <option value="SEM-6" >SEM-6</option>
                                 <option value="SEM-7" >SEM-7</option>
                                 <option value="SEM-8" >SEM-8</option>
-
                             </select>
+                            <button onClick={onClick}>GO</button>
                         </div>
                         <div className="year">YEAR</div>
                     </div>
                 </div>
-                <hr/>
-                <div className="pyqLeftbar">
-                    Hello
-                </div>
-                <div className="pyqRightbar">
-                    {/* RIGHTBAR */}
-                </div>
+                <hr />
+                {display}
             </div>
         </>
     );
